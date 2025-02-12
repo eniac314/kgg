@@ -54,7 +54,7 @@ type alias PhpSessionId =
 type FrontendMsg
     = UrlClicked UrlRequest
     | UrlChanged Url
-    | GotInfoFromParent D.Value
+    | GotInfoFromParent String
     | ReqGetKey
     | KggSetCustomKanjiSet String
     | KggSetKanjiSet KanjiSet Int

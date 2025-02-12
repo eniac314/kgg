@@ -27,11 +27,11 @@ import Url
 port toParentPort : E.Value -> Cmd msg
 
 
-port fromParentPort : (D.Value -> msg) -> Sub msg
+port fromParentPort : (String -> msg) -> Sub msg
 
 
-fromParent model dVal =
-    case D.decodeValue fromParentPayload dVal of
+fromParent model jsonStr =
+    case D.decodeString fromParentPayload jsonStr of
         Ok (UserInfoPayload username sessionCookie) ->
             ( model, Lamdera.sendToBackend <| PlayerInfoSubmittedTB username sessionCookie )
 
