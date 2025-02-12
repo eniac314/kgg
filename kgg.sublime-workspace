@@ -1,0 +1,1020 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"S",
+				"Status"
+			],
+			[
+				"de",
+				"decomposer"
+			],
+			[
+				"mem",
+				"membersBlogIndex"
+			],
+			[
+				"in",
+				"inlines"
+			],
+			[
+				"ligh",
+				"lightBlue"
+			],
+			[
+				"Ba",
+				"BackgroundColor"
+			],
+			[
+				"al",
+				"alignBottom"
+			],
+			[
+				"ru",
+				"ruby"
+			],
+			[
+				"writ",
+				"writingsToStr"
+			],
+			[
+				"kan",
+				"kanji"
+			],
+			[
+				"wi",
+				"withDefault"
+			],
+			[
+				"jap",
+				"japExtractor"
+			],
+			[
+				"star",
+				"startsWithNoJap"
+			],
+			[
+				"le",
+				"legacyReading"
+			],
+			[
+				"chom",
+				"chompWhile"
+			],
+			[
+				"get",
+				"getChompedString"
+			],
+			[
+				"html",
+				"htmlRubyParser"
+			],
+			[
+				"pa",
+				"paddingXY"
+			],
+			[
+				"Kan",
+				"KanjiEditor"
+			],
+			[
+				"swa",
+				"swapUp"
+			],
+			[
+				"remo",
+				"removeCoreMeaning"
+			],
+			[
+				"remove",
+				"removeAnyMeaning"
+			],
+			[
+				"ed",
+				"editAnyMeanings"
+			],
+			[
+				"editM",
+				"EditMeanings"
+			],
+			[
+				"Kanji",
+				"KanjidicEntry"
+			],
+			[
+				"grou",
+				"groupColor"
+			],
+			[
+				"B",
+				"Background"
+			],
+			[
+				"to",
+				"toFloat"
+			],
+			[
+				"mainContent",
+				"mainContentFullScreen"
+			],
+			[
+				"ht",
+				"html"
+			],
+			[
+				"padd",
+				"paddingEach"
+			],
+			[
+				"ali",
+				"alignRight"
+			],
+			[
+				"fix",
+				"fixLittleTsu"
+			],
+			[
+				"meain",
+				"frenchMeaning"
+			],
+			[
+				"cet",
+				"centerY"
+			],
+			[
+				"pass",
+				"passive"
+			],
+			[
+				"poten",
+				"potentielle"
+			],
+			[
+				"conf",
+				"configView"
+			],
+			[
+				"dic",
+				"dictionnaire"
+			],
+			[
+				"VTT",
+				"VTTeForm"
+			],
+			[
+				"re",
+				"remove"
+			],
+			[
+				"ver",
+				"VerbsTableConfig"
+			],
+			[
+				"showingB",
+				"showingVerbQuiz"
+			],
+			[
+				"Verbs",
+				"VerbsTableConfig"
+			],
+			[
+				"col",
+				"columnData"
+			],
+			[
+				"con",
+				"conditionnal"
+			],
+			[
+				"header",
+				"headerInFrench"
+			],
+			[
+				"he",
+				"headerInFrench"
+			],
+			[
+				"fil",
+				"filterMap"
+			],
+			[
+				"conjugateA",
+				"conjugateAdjective"
+			],
+			[
+				"answe",
+				"answerType"
+			],
+			[
+				"inter",
+				"inderdictForm"
+			],
+			[
+				"fi",
+				"fill"
+			],
+			[
+				"anser",
+				"answered"
+			],
+			[
+				"sc",
+				"scrollbarY"
+			],
+			[
+				"ans",
+				"answer"
+			],
+			[
+				"pitch",
+				"pitchAccentsToString"
+			],
+			[
+				"pitchAcc",
+				"pitchAccentInput"
+			],
+			[
+				"showing",
+				"showingPitchAccents"
+			],
+			[
+				"cen",
+				"centerX"
+			],
+			[
+				"show",
+				"showParticle"
+			],
+			[
+				"parseCo",
+				"parseCorrected"
+			],
+			[
+				"acc",
+				"accent"
+			],
+			[
+				"st",
+				"startingPoint"
+			],
+			[
+				"pi",
+				"pitchAccentToSvg"
+			],
+			[
+				"pit",
+				"pitchAccentFromCodeString"
+			],
+			[
+				"morae",
+				"moraeDecomp"
+			],
+			[
+				"mo",
+				"moraeDecomposition"
+			],
+			[
+				"Pit",
+				"PitchAccent"
+			],
+			[
+				"fla",
+				"flattenJap"
+			],
+			[
+				"ad",
+				"adjectives"
+			],
+			[
+				"na",
+				"naKeyYouShiQuizzed"
+			],
+			[
+				"Qui",
+				"QuizDisplay"
+			],
+			[
+				"Adjective",
+				"AdjectiveForm"
+			],
+			[
+				"Key",
+				"KeiYouShi"
+			],
+			[
+				"Adje",
+				"AdjectiveForm"
+			],
+			[
+				"del",
+				"delim2"
+			],
+			[
+				"fl",
+				"flatStr"
+			],
+			[
+				"IKeiY",
+				"IKeiYouShi"
+			],
+			[
+				"IKe",
+				"IKeiYouShi"
+			],
+			[
+				"Ke",
+				"KeiYouShi"
+			],
+			[
+				"cent",
+				"centerX"
+			],
+			[
+				"s",
+				"shrink"
+			],
+			[
+				"te",
+				"teForm"
+			],
+			[
+				"お",
+				"お休みなさい"
+			],
+			[
+				"replca",
+				"replaceExpressionKana"
+			],
+			[
+				"cu",
+				"currentMatch"
+			],
+			[
+				"repl",
+				"replaceExpressionKana"
+			],
+			[
+				"su",
+				"surface"
+			],
+			[
+				"prei",
+				"prefix"
+			],
+			[
+				"from",
+				"fromList"
+			],
+			[
+				"off",
+				"offWhite"
+			],
+			[
+				"sh",
+				"shrink"
+			],
+			[
+				"ma",
+				"markdown"
+			],
+			[
+				"kanji",
+				"kanjiQuizRevealEverything"
+			],
+			[
+				"Cli",
+				"ClickableJapaneseString"
+			],
+			[
+				"man",
+				"manual"
+			],
+			[
+				"rea",
+				"kanjiReadingQuizzes"
+			],
+			[
+				"kanjiQ",
+				"mnnKanjiQuizLesson"
+			],
+			[
+				"lesson",
+				"lessonView"
+			],
+			[
+				"read",
+				"kanjiReadingQuizzes"
+			],
+			[
+				"less",
+				"lessonView"
+			],
+			[
+				"E",
+				"Element"
+			],
+			[
+				"Kanjid",
+				"Kanjidic"
+			],
+			[
+				"H",
+				"HtmlAttr"
+			],
+			[
+				"cli",
+				"clickableReadingView"
+			],
+			[
+				"yomu",
+				"yomuRenshuView"
+			],
+			[
+				"Pla",
+				"PlainCJS"
+			],
+			[
+				"clic",
+				"clickableJstr"
+			],
+			[
+				"Yo",
+				"yomuRenshuSample"
+			],
+			[
+				"les",
+				"lessonNameParser"
+			],
+			[
+				"curre",
+				"currentJstr"
+			],
+			[
+				"reading",
+				"readingToClickableReading"
+			],
+			[
+				"mb",
+				"mbPluginResult"
+			],
+			[
+				"cone",
+				"connexionDropped"
+			],
+			[
+				"arre",
+				"arrêter"
+			],
+			[
+				"new",
+				"newTabLink"
+			],
+			[
+				"term",
+				"termine"
+			],
+			[
+				"augm",
+				"augmente"
+			],
+			[
+				"par",
+				"parseNotesInChoice"
+			],
+			[
+				"verbs",
+				"verbsTransitivity"
+			],
+			[
+				"Verb",
+				"VerbsIndex"
+			],
+			[
+				"move",
+				"moveUp"
+			],
+			[
+				"cor",
+				"correctAnswer"
+			],
+			[
+				"corre",
+				"correctAnswer"
+			],
+			[
+				"filt",
+				"filterMap"
+			],
+			[
+				"choice",
+				"choiceView"
+			],
+			[
+				"cho",
+				"chosenAnswer"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "src/Backend.elm",
+			"settings":
+			{
+				"buffer_size": 3923,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"remov",
+				"Package Control: Remove Package"
+			],
+			[
+				"up",
+				"Package Control: Upgrade Package"
+			],
+			[
+				"terminus",
+				"Terminus: Toggle Panel"
+			],
+			[
+				"term",
+				"Terminal: Open"
+			],
+			[
+				"",
+				"Bookmarks: Select Previous"
+			],
+			[
+				"teminus ope",
+				"Terminus: Toggle Panel"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"open",
+				"Terminus: Open Default Shell in Tab (View)"
+			],
+			[
+				"terminus ",
+				"Terminus: Close All"
+			],
+			[
+				"terminus open",
+				"Terminus: Toggle Panel"
+			],
+			[
+				"terminus: io",
+				"Terminus: Open Default Shell in Tab (View)"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"remo",
+				"Package Control: Remove Package"
+			],
+			[
+				"rem",
+				"Package Control: Remove Package"
+			],
+			[
+				"Package Control: up",
+				"Package Control: Upgrade/Overwrite All Packages"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"floo",
+				"Floobits - Settings (~/.floorc.json)"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"pac",
+				"Package Control: Upgrade Package"
+			],
+			[
+				"packa",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 159.0,
+		"history":
+		[
+			"terminus",
+			"teminus",
+			"Terminus: Open Default Shell in Tab"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/eniac314/prog/elm/kgg",
+		"/Users/eniac314/prog/elm/kgg/src"
+	],
+	"file_history":
+	[
+		"/Users/eniac314/prog/elm/kanjiGame/auth-src/Auth/Common.elm",
+		"/Users/eniac314/prog/elm/kanjiGame/src/Types.elm",
+		"/Users/eniac314/prog/elm/kanjiGame/elm.json",
+		"/Users/eniac314/prog/elm/kanjiGameOld/src/Types.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Types.elm",
+		"/Users/eniac314/prog/elm/kanjiGame/src/Auth.elm",
+		"/Users/eniac314/prog/elm/kanjiGame/src/Env.elm",
+		"/Users/eniac314/prog/elm/kanjiGame/src/Backend.elm",
+		"/Users/eniac314/prog/elm/kanjiGame/src/Frontend.elm",
+		"/Users/eniac314/prog/elm/kanjiGame/src/Config.elm",
+		"/Users/eniac314/Desktop/trad momoko.txt",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Main.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Routes.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/restricted/membersBlog/Notes Révisions MNN1.md",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/index.php",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Plugins/Decomposer.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/Blog.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/Home.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/Less 29/grammar_less_29.md",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/Kanji/Data.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/JapaneseDictionary.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/Verbs/VerbsFormsTable.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/Kanji/Conversion.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Markdown/MarkdownParser.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Markdown/MarkdownEditor.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Markdown/JapPreprocessor.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Utils/Utils.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Plugins/QCM.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/Verbs.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/Verbs/VerbsData.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/MnnManual.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/restricted/pdfConfigs/less01Romaji.json",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/restricted/MinnaNoNihongo1Romaji/lessons/splitter.sh",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Markdown/Renderer.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Plugins/Whiteboard.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/Kanji/KanjiEditor.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/Kanji/KanjiQuiz.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/Verbs/VerbsQuiz.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/classNotes/Yann/06-2024/Notes 29-06",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/Less 27/grammar_less_27.md",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/classNotes/Aurelien/08-2024/Notes 04-08.txt",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/classNotes/Aurelien/08-2024/Notes 02-08",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/classNotes/Aurelien/07-2024/notes 31-07",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/Adjectives/AdjectivesQuiz.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/classNotes/Aurelien/07-2024/notes 19-07",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/classNotes/Aurelien/07-2024/notes 12-07.txt",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Plugins/PdfReader.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/classNotes/Aurelien/07-2024/notes 10-07",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/classNotes/Aurelien/07-2024/notes themes version",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/classNotes/Aurelien/07-2024/notes 08-07.txt",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/Verbs/VerbsLessons.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/Classical/ClassicalQuizes.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/Classical/InflectedForms.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/Classical/InflectedFormsDataSet.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/Kanji.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/Less 20/grammar_less_20.md",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/Less 23/grammar_less_23.md",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Plugins/PitchAccent.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/blog/Variations de niveau de language.md",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/classNotes/Aurelien/02-2024/Notes 28-02.txt",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/Less 11/leçon 11.txt",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/Less 05/leçon 05.txt",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/Adjectives/AdjectivesData.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/Less 09/leçon 09.txt",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/assets/batchUpdateVocPitchAccent.py",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/blog/L'accent en japonais.md",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/Vocabulary.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/modules/vocabulary/update_mnn_voc_entry.inc.php",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/assets/python_scripts/updateVoc.py",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/classNotes/Aurelien/02-2024/Notes 23-02.txt",
+		"/Users/eniac314/Downloads/images étiquettes amarante/etiquettes.txt",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/Less 14/leçon 14.txt",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/Less 27/leçon 27.txt",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/Less 01/leçon 01Voc.txt",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/Less 17/leçon 17Voc.txt",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/assets/accents.sql",
+		"/opt/homebrew/etc/php/8.3/php.ini",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/assets/accents.py",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/assets/accents.txt",
+		"/Users/eniac314/prog/elm/uminokirin2.0/elm.json",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/Presentation.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/Adjectives.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/Auth.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/Notes.md",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/MnnGrammar.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/Less 19/grammar_less_19.md",
+		"/Users/eniac314/Desktop/tmp/\u001f漢字.md",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/assets/KanjiJLPT.txt",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Style/Palette.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Style/Helpers.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/Fonts/font.css",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/blog/Donner et recevoir : あげる、くれる、もらう.md",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Plugins/VocMemo.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/apiIndex.php",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/modules/japTokenization/tokenizeJapStrings.inc.php",
+		"/opt/homebrew/etc/httpd/httpd.conf",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/.htaccess",
+		"/opt/homebrew/etc/httpd/extra/httpd-ssl.conf",
+		"/opt/homebrew/etc/httpd/extra/httpd-vhosts.conf",
+		"/Users/eniac314/Sites/https/Readme.md",
+		"/opt/homebrew/etc/httpd/server.crt",
+		"/opt/homebrew/var/log/httpd/error_log",
+		"/usr/local/etc/httpd/httpd.conf",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/exosKanji/exosGen.md",
+		"/Users/eniac314/Downloads/yomitan-settings-2024-01-03-10-40-17.json",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/public/data/exosKanji/exosGenFurigana.md",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/modules/auth/refresh.inc.php",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/Auth/Login.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/Auth/Logout.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/FlashCards/FlashCardsViews.elm",
+		"/Users/eniac314/prog/elm/laTerreDuChat2.0/apache/includes/config.inc.php",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/includes/config.inc.php",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/modules/japTokenization/furigana.inc.php",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/LegacyKana/KanaVirtKeyb.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/includes/private.inc.php",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/includes/utils.inc.php",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/LegacyKana/PracticeContent.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/restricted/pdfConfigs/less15.json",
+		"/Users/eniac314/Sites/backupPaniersSaison/fk_dump.sql",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/Kanji/MainView.elm",
+		"/Users/eniac314/prog/elm/uminokirin2.0/src/Pages/FlashCards.elm",
+		"/Users/eniac314/Downloads/matomodb5000151866_hosting-data_io.sql",
+		"/Users/eniac314/prog/elm/laTerreDuChat2.0/apache/includes/prodDB.inc.php",
+		"/Users/eniac314/Desktop/pass.txt",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/modules/flashcards/get_deck_cards.inc.php",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/includes/prodDB.inc.php",
+		"/Users/eniac314/prog/elm/uminokirin2.0/apache/modules/flashcards/get_decks_and_next_ids.inc.php",
+		"/Users/eniac314/Downloads/db706206631_db_1and1_com.sql"
+	],
+	"find":
+	{
+		"height": 28.0
+	},
+	"find_in_files":
+	{
+		"height": 457.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"scrollbar_highlights": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"use_gitignore": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "src/Backend.elm",
+					"selected": true,
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 3923,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"lsp_uri": "file:///Users/eniac314/prog/elm/kgg/src/Backend.elm",
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/Elm Syntax Highlighting/src/elm.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"stack_multiselect": false,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 28.0
+	},
+	"input":
+	{
+		"height": 155.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.LSP Log Panel":
+	{
+		"height": 0.0
+	},
+	"output.SFTP":
+	{
+		"height": 0.0
+	},
+	"output.Terminus":
+	{
+		"height": 243.0
+	},
+	"output.Terminus 2":
+	{
+		"height": 102.0
+	},
+	"output.Terminus 3":
+	{
+		"height": 114.0
+	},
+	"output.Terminus 4":
+	{
+		"height": 114.0
+	},
+	"output.Terminus 5":
+	{
+		"height": 114.0
+	},
+	"output.Terminus 6":
+	{
+		"height": 114.0
+	},
+	"output.diagnostics":
+	{
+		"height": 0.0
+	},
+	"output.elm_format":
+	{
+		"height": 228.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "kgg.sublime-project",
+	"replace":
+	{
+		"height": 52.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"secre",
+				"apacheBackup/vendor/paragonie/halite/src/Asymmetric/SecretKey.php"
+			],
+			[
+				"getFeuill",
+				"html/feuillesLiaison/getFeuilleLiaison.php"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 501.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"~/prog/elm/paniersSaison/paniersSaison.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 305.0,
+		"last_filter": "subs",
+		"selected_items":
+		[
+			[
+				"subs",
+				"subscriptions"
+			],
+			[
+				"edit",
+				"defEditingSelectedArtwork"
+			],
+			[
+				"mobiel",
+				"mobileNavView"
+			],
+			[
+				"compute",
+				"computeDisplayMinHeight"
+			],
+			[
+				"contactV",
+				"contactView"
+			],
+			[
+				"content",
+				"content"
+			]
+		],
+		"width": 592.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+		"lsp_show_inlay_hints": false
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 251.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
