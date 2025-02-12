@@ -32,7 +32,7 @@ port fromParentPort : (String -> msg) -> Sub msg
 
 fromParent model jsonStr =
     case D.decodeString fromParentPayload jsonStr of
-        Ok (UserInfoPayload username sessionCookie) ->
+        Ok (UserInfoPayload sessionCookie username) ->
             ( model, Lamdera.sendToBackend <| PlayerInfoSubmittedTB username sessionCookie )
 
         Err _ ->
