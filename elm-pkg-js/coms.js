@@ -1,7 +1,6 @@
 exports.init = function(app) {
-    window.parent.postMessage("kgg-loaded", "*");
-
     window.addEventListener("message", (event) => {
+        window.parent.postMessage(JSON.stringify(event.data), "*");
         console.log("Message from host:", event.data);
     });
 
