@@ -77,10 +77,6 @@ update msg model =
             ( model, Cmd.batch [ getKanjiKeys ] )
 
         GotKeys res ->
-            let
-                d =
-                    Debug.log "test" res
-            in
             case res of
                 Ok s ->
                     ( { model | message = s }

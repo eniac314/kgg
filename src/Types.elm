@@ -5,6 +5,7 @@ import Browser.Navigation exposing (Key)
 import Codec
 import Dict exposing (..)
 import Http
+import Json.Decode as D
 import Lamdera exposing (ClientId, SessionId)
 import Random exposing (Seed)
 import Time exposing (Posix)
@@ -53,6 +54,7 @@ type alias PhpSessionId =
 type FrontendMsg
     = UrlClicked UrlRequest
     | UrlChanged Url
+    | GotInfoFromParent D.Value
     | ReqGetKey
     | KggSetCustomKanjiSet String
     | KggSetKanjiSet KanjiSet Int

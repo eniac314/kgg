@@ -1,6 +1,7 @@
 exports.init = function(app) {
     window.addEventListener("message", (event) => {
         window.parent.postMessage(JSON.stringify(event.data), "*");
+        app.ports.fromParentPort.send(event.data);
         console.log("Message from host:", event.data);
     });
 

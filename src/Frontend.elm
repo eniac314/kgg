@@ -1,4 +1,4 @@
-module Frontend exposing (..)
+port module Frontend exposing (..)
 
 import Browser exposing (UrlRequest(..))
 import Browser.Navigation as Nav
@@ -15,11 +15,42 @@ import Html
 import Html.Attributes as Attr
 import Html.Events as Events
 import Http
+import Json.Decode as D
+import Json.Encode as E
 import Lamdera
 import Task
 import Time
 import Types exposing (..)
 import Url
+
+
+port toParentPort : E.Value -> Cmd msg
+
+
+port fromParentPort : (D.Value -> msg) -> Sub msg
+
+
+fromParent model dVal =
+    case D.decodeValue fromParentPayload dVal of
+        Ok (UserInfoPayload username sessionCookie) ->
+            ( model, Lamdera.sendToBackend <| PlayerInfoSubmittedTB username sessionCookie )
+
+        Err _ ->
+            ( model, Cmd.none )
+
+
+type FromParentPayload
+    = UserInfoPayload String String
+
+
+fromParentPayload =
+    D.oneOf [ userInfoPayload ]
+
+
+userInfoPayload =
+    D.map2 UserInfoPayload
+        (D.field "cookie" D.string)
+        (D.field "username" D.string)
 
 
 type alias Model =
@@ -33,7 +64,7 @@ app =
         , onUrlChange = UrlChanged
         , update = update
         , updateFromBackend = updateFromBackend
-        , subscriptions = \m -> Sub.none
+        , subscriptions = \m -> Sub.batch [ fromParentPort GotInfoFromParent ]
         , view = view
         }
 
@@ -55,7 +86,8 @@ init url key =
       , kggSyncing = False
       , now = Time.millisToPosix 0
       }
-    , Cmd.batch [ Lamdera.sendToBackend <| PlayerInfoSubmittedTB "florian" "" ]
+    , Cmd.none
+      --Cmd.batch [ Lamdera.sendToBackend <| PlayerInfoSubmittedTB "florian" "" ]
       --, getKanjiKeys
     )
 
@@ -77,6 +109,9 @@ update msg model =
 
         UrlChanged url ->
             ( model, Cmd.none )
+
+        GotInfoFromParent dVal ->
+            fromParent model dVal
 
         ReqGetKey ->
             ( model, Lamdera.sendToBackend GetKeysTB )
