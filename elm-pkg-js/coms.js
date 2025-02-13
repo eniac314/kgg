@@ -1,4 +1,12 @@
 exports.init = function(app) {
+    if (window.self !== window.top) {
+        app.ports.isIFrameTestPort.send(JSON.stringify({ isInIframe : true }));
+        console.log("This page is inside an iframe.");
+    } else {
+        app.ports.isIFrameTestPort.send(JSON.stringify({ isInIframe : false }));
+        console.log("This page is not inside an iframe.");
+    }
+
     window.addEventListener("message", (event) => {
         window.parent.postMessage(JSON.stringify(event.data), "*");
         app.ports.fromParentPort.send(event.data);

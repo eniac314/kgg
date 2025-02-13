@@ -11,6 +11,7 @@ import Element.Font as Font
 import Element.HexColor exposing (rgbCSSHex)
 import Element.Input as Input
 import GuessingGame as Kgg
+import Helpers exposing (..)
 import Html
 import Html.Attributes as Attr
 import Html.Events as Events
@@ -18,6 +19,8 @@ import Http
 import Json.Decode as D
 import Json.Encode as E
 import Lamdera
+import Style.Helpers exposing (..)
+import Style.Palette exposing (..)
 import Task
 import Time
 import Types exposing (..)
@@ -30,12 +33,29 @@ port toParentPort : E.Value -> Cmd msg
 port fromParentPort : (String -> msg) -> Sub msg
 
 
+port isIFrameTestPort : (String -> msg) -> Sub msg
+
+
 fromParent model jsonStr =
     case D.decodeString fromParentPayload jsonStr of
         Ok (UserInfoPayload sessionCookie username) ->
             ( model, Lamdera.sendToBackend <| PlayerInfoSubmittedTB username sessionCookie )
 
         Err _ ->
+            ( model, Cmd.none )
+
+
+gotIFrameTestResult : Model -> String -> ( Model, Cmd FrontendMsg )
+gotIFrameTestResult model jsonStr =
+    case D.decodeString (D.field "isInIframe" D.bool) jsonStr of
+        Ok res ->
+            ( { model | isEmbedded = Just res }, Cmd.none )
+
+        Err e ->
+            let
+                d =
+                    Debug.log "" e
+            in
             ( model, Cmd.none )
 
 
@@ -64,7 +84,12 @@ app =
         , onUrlChange = UrlChanged
         , update = update
         , updateFromBackend = updateFromBackend
-        , subscriptions = \m -> Sub.batch [ fromParentPort GotInfoFromParent ]
+        , subscriptions =
+            \m ->
+                Sub.batch
+                    [ fromParentPort GotInfoFromParent
+                    , isIFrameTestPort GotIFrameTestResult
+                    ]
         , view = view
         }
 
@@ -72,8 +97,9 @@ app =
 init : Url.Url -> Nav.Key -> ( Model, Cmd FrontendMsg )
 init url key =
     ( { key = key
-      , message = "Welcome to Lamdera! You're looking at the auto-generated base implementation. Check out src/Frontend.elm to start coding!"
+      , message = ""
       , kggames = Dict.empty
+      , username = Nothing
       , thisPlayer = Nothing
       , players = []
       , kggWordInput = Nothing
@@ -84,6 +110,7 @@ init url key =
             , kggStartingCountdownInput = Nothing
             }
       , kggSyncing = False
+      , isEmbedded = Nothing
       , now = Time.millisToPosix 0
       }
     , Cmd.none
@@ -110,8 +137,22 @@ update msg model =
         UrlChanged url ->
             ( model, Cmd.none )
 
-        GotInfoFromParent dVal ->
-            fromParent model dVal
+        GotInfoFromParent jsonStr ->
+            fromParent model jsonStr
+
+        GotIFrameTestResult jsonStr ->
+            gotIFrameTestResult model jsonStr
+
+        UsernameInput name ->
+            ( { model | username = mbStr name }, Cmd.none )
+
+        SendUser ->
+            case model.username of
+                Just u ->
+                    ( model, Lamdera.sendToBackend <| PlayerInfoSubmittedTB u "" )
+
+                Nothing ->
+                    ( model, Cmd.none )
 
         ReqGetKey ->
             ( model, Lamdera.sendToBackend GetKeysTB )
@@ -232,5 +273,36 @@ view : Model -> Browser.Document FrontendMsg
 view model =
     { title = ""
     , body =
-        [ Element.layout [] <| Kgg.view model ]
+        [ Element.layout [] <|
+            case model.thisPlayer of
+                Just player ->
+                    Kgg.view model
+
+                Nothing ->
+                    case model.isEmbedded of
+                        Just True ->
+                            Kgg.view model
+
+                        Just False ->
+                            userInputView model
+
+                        Nothing ->
+                            el [ padding 15 ] <| text "Loading..."
+        ]
     }
+
+
+userInputView model =
+    column
+        [ padding 15 ]
+        [ column [ spacing 15 ]
+            [ Input.text []
+                { onChange = UsernameInput
+                , text = model.username |> Maybe.withDefault ""
+                , placeholder = Nothing
+                , label = Input.labelAbove [] <| text "Username"
+                }
+            , Input.button (buttonStyle_ (model.username /= Nothing))
+                { onPress = Maybe.map (always SendUser) model.username, label = text "Envoyer" }
+            ]
+        ]

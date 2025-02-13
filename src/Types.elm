@@ -16,6 +16,7 @@ type alias FrontendModel =
     { key : Key
     , message : String
     , kggames : Dict Int KanjiGuessingGame
+    , username : Maybe String
     , thisPlayer : Maybe Player
     , players : List Player
     , kggWordInput : Maybe String
@@ -26,6 +27,7 @@ type alias FrontendModel =
         , kggStartingCountdownInput : Maybe String
         }
     , kggSyncing : Bool
+    , isEmbedded : Maybe Bool
     , now : Time.Posix
     }
 
@@ -55,6 +57,9 @@ type FrontendMsg
     = UrlClicked UrlRequest
     | UrlChanged Url
     | GotInfoFromParent String
+    | GotIFrameTestResult String
+    | UsernameInput String
+    | SendUser
     | ReqGetKey
     | KggSetCustomKanjiSet String
     | KggSetKanjiSet KanjiSet Int
