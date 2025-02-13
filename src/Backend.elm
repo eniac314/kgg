@@ -137,6 +137,9 @@ updateFromFrontend sessionId clientId msg model =
             , Lamdera.sendToFrontend clientId <| PlayerInfoRegisteredTF { name = username, id = clientId }
             )
 
+        RequestInitialGamesBroadCastTB ->
+            ( model, initialGamesBroadcast model clientId )
+
         NoOpTB ->
             ( model, Cmd.none )
 

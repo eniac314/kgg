@@ -6,8 +6,10 @@ import Codec
 import Dict exposing (..)
 import Http
 import Json.Decode as D
+import Keyboard
 import Lamdera exposing (ClientId, SessionId)
 import Random exposing (Seed)
+import Set exposing (Set)
 import Time exposing (Posix)
 import Url exposing (Url)
 
@@ -18,6 +20,7 @@ type alias FrontendModel =
     , kggames : Dict Int KanjiGuessingGame
     , username : Maybe String
     , thisPlayer : Maybe Player
+    , currentlyPlaying : Maybe GameId
     , players : List Player
     , kggWordInput : Maybe String
     , kggWrongWordBuffer : Maybe String
@@ -26,10 +29,15 @@ type alias FrontendModel =
         , kggRoundLengthInput : Maybe String
         , kggStartingCountdownInput : Maybe String
         }
-    , kggSyncing : Bool
     , isEmbedded : Maybe Bool
     , now : Time.Posix
     }
+
+
+type FrontEndStatus
+    = WaitingForEmbedTest
+    | WaitingForPlayerInfo
+    | WaitingForInitialGamesBroadcast
 
 
 type alias BackendModel =
@@ -72,12 +80,14 @@ type FrontendMsg
     | KggRequestNextKanji GameId
     | GotTimeF Time.Posix
     | SendToBackendWithTime ToBackend
+    | KeyboardMsg Keyboard.Msg
     | NoOpFrontendMsg
 
 
 type ToBackend
     = GetKeysTB
     | PlayerInfoSubmittedTB Username PhpSessionId
+    | RequestInitialGamesBroadCastTB
     | CreateGameTB Player { kanjiSet : KanjiSet, roundLength : Int, startingCountdown : Int } Time.Posix
     | JoinTB Player GameId
     | LeaveTB Player GameId
@@ -101,6 +111,7 @@ type BackendMsg
 
 type ToFrontend
     = ToFrontendMsgTF String
+    | InitialBufferTF GameId { bufferSize : Int, done : Set Char }
     | GameBroadcastTF KanjiGuessingGame
     | GameTimesBroadcastTF
         { gameId : GameId
@@ -150,7 +161,6 @@ type alias KanjiGuessingGame =
     , gameState : KGGameState
     , lastUpdated : Int
     , buffering : Bool
-    , initialBuffer : Bool
 
     --, roundLength : Int
     }
@@ -162,6 +172,11 @@ type KGGameState
         , roundLength : Int
         , startingCountdown : Int
         }
+      --| Loading
+      --    { initialBuffer : { bufferSize : Int, done : Set Char }
+      --    , bufferedKanji : List Char
+      --    , allowedWords : Dict Char (List String)
+      --    }
     | InPlay
         { score : Int
         , currentKanji : Char
@@ -175,6 +190,7 @@ type KGGameState
         , timeTillGameOver : Int
         , roundLength : Int
         , startingCountdown : Int
+        , initialBuffer : { bufferSize : Int, done : Set Char }
         }
     | Victory { score : Int }
     | GameOver { score : Int }

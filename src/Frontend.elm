@@ -18,6 +18,7 @@ import Html.Events as Events
 import Http
 import Json.Decode as D
 import Json.Encode as E
+import Keyboard as K
 import Lamdera
 import Style.Helpers exposing (..)
 import Style.Palette exposing (..)
@@ -89,6 +90,7 @@ app =
                 Sub.batch
                     [ fromParentPort GotInfoFromParent
                     , isIFrameTestPort GotIFrameTestResult
+                    , Sub.map KeyboardMsg K.subscriptions
                     ]
         , view = view
         }
@@ -101,6 +103,7 @@ init url key =
       , kggames = Dict.empty
       , username = Nothing
       , thisPlayer = Nothing
+      , currentlyPlaying = Nothing
       , players = []
       , kggWordInput = Nothing
       , kggWrongWordBuffer = Nothing
@@ -109,7 +112,6 @@ init url key =
             , kggRoundLengthInput = Nothing
             , kggStartingCountdownInput = Nothing
             }
-      , kggSyncing = False
       , isEmbedded = Nothing
       , now = Time.millisToPosix 0
       }
@@ -198,6 +200,9 @@ update msg model =
         SendToBackendWithTime toBackend ->
             ( model, Lamdera.sendToBackend toBackend )
 
+        KeyboardMsg keyMsg ->
+            Kgg.keyboardMsg model keyMsg
+
         NoOpFrontendMsg ->
             ( model, Cmd.none )
 
@@ -219,8 +224,31 @@ updateFromBackend msg model =
         ToFrontendMsgTF s ->
             ( { model | message = s }, Cmd.none )
 
+        InitialBufferTF gameId buffer ->
+            case Dict.get gameId model.kggames of
+                Just game ->
+                    case game.gameState of
+                        InPlay substate ->
+                            let
+                                newSubstate =
+                                    InPlay { substate | initialBuffer = buffer }
+
+                                newGame =
+                                    { game | gameState = newSubstate }
+                            in
+                            ( { model | kggames = Dict.insert gameId newGame model.kggames }, Cmd.none )
+
+                        _ ->
+                            ( model, Cmd.none )
+
+                Nothing ->
+                    ( model, Cmd.none )
+
         GameBroadcastTF game ->
-            ( { model | kggames = Dict.insert game.gameId game model.kggames }
+            ( { model
+                | kggames = Dict.insert game.gameId game model.kggames
+                , kggWordInput = Nothing
+              }
             , Cmd.none
             )
 
@@ -263,7 +291,7 @@ updateFromBackend msg model =
             ( { model | kggWrongWordBuffer = Just wrongWord }, Cmd.none )
 
         PlayerInfoRegisteredTF player ->
-            ( { model | thisPlayer = Just player }, Cmd.none )
+            ( { model | thisPlayer = Just player }, Lamdera.sendToBackend RequestInitialGamesBroadCastTB )
 
         NoOpTF ->
             ( model, Cmd.none )

@@ -19,6 +19,7 @@ import Json.Encode as E
 import Keyboard as K
 import Lamdera exposing (sendToBackend)
 import List.Extra
+import Set
 import String.Extra
 import Style.Helpers exposing (..)
 import Style.Palette exposing (..)
@@ -185,9 +186,14 @@ view model =
 
           else
             Element.none
-        , column
-            [ spacing 30 ]
-            (List.map (\g -> gameView g model.kggConfigInputs model.thisPlayer model.kggWordInput model.kggWrongWordBuffer) (Dict.values model.kggames))
+        , case getCurrentGame model of
+            Just cg ->
+                gameView cg model.kggConfigInputs model.thisPlayer model.kggWordInput model.kggWrongWordBuffer
+
+            Nothing ->
+                column
+                    [ spacing 30 ]
+                    (List.map (\g -> gameView g model.kggConfigInputs model.thisPlayer model.kggWordInput model.kggWrongWordBuffer) (Dict.values model.kggames))
         ]
 
 
@@ -222,6 +228,30 @@ isCurrentlyPlaying model =
             False
 
 
+currentGameInitialLoadingStatus gs =
+    round <| 100 * toFloat gs.initialBuffer.bufferSize / (toFloat <| Set.size gs.initialBuffer.done)
+
+
+getCurrentGame : FrontendModel -> Maybe KanjiGuessingGame
+getCurrentGame model =
+    case model.thisPlayer of
+        Just p ->
+            List.filter
+                (\g ->
+                    case g.gameState of
+                        InPlay _ ->
+                            List.member p g.players
+
+                        _ ->
+                            False
+                )
+                (Dict.values model.kggames)
+                |> List.head
+
+        Nothing ->
+            Nothing
+
+
 gameView :
     KanjiGuessingGame
     ->
@@ -247,10 +277,7 @@ gameView game configInputs mbThisPlayer buffer wrongWord =
                 [ padding 15
                 , spacing 15
                 ]
-                [ --row [] [ text "game id: ", text <| String.fromInt game.gameId ]
-                  --, row [] [ text "host: ", playerView game.players game.host ]
-                  --, column [ spacing 10 ] (List.map (playerView game.players) game.players)
-                  gameStateView game.gameState configInputs game.players thisPlayer game.gameId isHost hasJoined buffer wrongWord game.buffering
+                [ gameStateView game.gameState configInputs game.players thisPlayer game.gameId isHost hasJoined buffer wrongWord game.buffering
                 ]
 
         Nothing ->
@@ -295,6 +322,15 @@ gameStateView gameState configInputs players thisPlayer gameId isHost hasJoined 
             lobbyView config configInputs gameId players thisPlayer isHost hasJoined buffering
 
         InPlay substate ->
+            --if currentGameInitialLoadingStatus substate < 100 then
+            --    column
+            --        [ padding 15
+            --        , spacing 15
+            --        , centerX
+            --        , width (px 400)
+            --        ]
+            --        [ el [] (text <| "Loading " ++ String.fromInt (currentGameInitialLoadingStatus substate) ++ "%") ]
+            --else
             inPlayView gameId players thisPlayer substate buffer wrongWord buffering
 
         GameOver substate ->
@@ -656,20 +692,28 @@ endedView substate =
 
 
 keyboardMsg model keyMsg =
-    Cmd.none
+    let
+        pressedKeys =
+            K.update keyMsg []
+    in
+    case getCurrentGame model of
+        Just game ->
+            ( model
+            , if List.member K.Enter pressedKeys then
+                toCmd <| KggSendWord game.gameId
+
+              else if List.member K.Control pressedKeys then
+                toCmd <| KggRequestNextKanji game.gameId
+
+              else
+                Cmd.none
+            )
+
+        Nothing ->
+            ( model, Cmd.none )
 
 
 
---let
---    pressedKeys =
---        K.update keyMsg []
---in
---( model
---, if List.member K.Enter pressedKeys then
---    toCmd <| KggSendWord 0
---  else
---    Cmd.none
---)
 -------------------------------------------------------------------------------
 
 

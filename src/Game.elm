@@ -3,12 +3,16 @@ module Game exposing (..)
 import ApiCalls
 import Dict
 import Helpers exposing (shuffleSeed)
-import Lamdera exposing (broadcast, sendToFrontend)
+import Lamdera exposing (ClientId, broadcast, sendToFrontend)
 import List.Extra
 import Random
 import Set
 import Time
 import Types exposing (..)
+
+
+bufferSize =
+    5
 
 
 updateConfig :
@@ -51,7 +55,6 @@ createGame model now host config =
             , gameState = Lobby config
             , lastUpdated = Time.posixToMillis now
             , buffering = False
-            , initialBuffer = False
 
             --, roundLength : Int
             }
@@ -109,7 +112,7 @@ launchPlay model gameId =
                 Lobby config ->
                     let
                         ( newSeed, kanjiForThisGame, bufferedKanji ) =
-                            (\( s, r ) -> ( s, List.drop 5 r, List.take 5 r )) <|
+                            (\( s, r ) -> ( s, List.drop bufferSize r, List.take bufferSize r )) <|
                                 case config.kanjiSet of
                                     JlptSet levels ->
                                         List.filterMap (\n -> Dict.get n jlpt) levels
@@ -126,26 +129,29 @@ launchPlay model gameId =
                             Dict.empty
 
                         newGameState =
-                            InPlay <|
-                                { score = 0
-                                , currentKanji = currentKanji
-                                , remainingKanji = kanjiForThisGame
-                                , bufferedKanji = List.tail bufferedKanji |> Maybe.withDefault []
-                                , kanjiSeen = []
-                                , words = Dict.empty
-                                , allowedWords = allTheWords
-                                , requestedSkip = []
-                                , timeTillRoundEnd = config.roundLength
-                                , timeTillGameOver = config.startingCountdown
-                                , roundLength = config.roundLength
-                                , startingCountdown = config.startingCountdown
-                                }
+                            { score = 0
+                            , currentKanji = currentKanji
+                            , remainingKanji = kanjiForThisGame
+                            , bufferedKanji = List.tail bufferedKanji |> Maybe.withDefault []
+                            , kanjiSeen = []
+                            , words = Dict.empty
+                            , allowedWords = allTheWords
+                            , requestedSkip = []
+                            , timeTillRoundEnd = config.roundLength
+                            , timeTillGameOver = config.startingCountdown
+                            , roundLength = config.roundLength
+                            , startingCountdown = config.startingCountdown
+                            , initialBuffer = { bufferSize = bufferSize, done = Set.empty }
+                            }
 
                         newGame =
-                            { game | gameState = newGameState, buffering = True, initialBuffer = True }
+                            { game | gameState = InPlay <| newGameState, buffering = True }
                     in
                     ( { model | kggames = Dict.insert gameId newGame model.kggames, seed = newSeed }
-                    , Cmd.batch [ ApiCalls.getAllTheWords gameId bufferedKanji ]
+                    , Cmd.batch
+                        [ ApiCalls.getAllTheWords gameId bufferedKanji
+                        , broadcast <| InitialBufferTF gameId newGameState.initialBuffer
+                        ]
                     )
 
                 _ ->
@@ -321,7 +327,7 @@ toNextRound model gameId =
         Just game ->
             case game.gameState of
                 InPlay substate ->
-                    if game.initialBuffer then
+                    if substate.initialBuffer.bufferSize /= Set.size substate.initialBuffer.done then
                         ( model, Cmd.none )
 
                     else
@@ -453,6 +459,23 @@ addTimeStampModel model gameId now =
 
         _ ->
             model
+
+
+initialGamesBroadcast : BackendModel -> ClientId -> Cmd BackendMsg
+initialGamesBroadcast model clientId =
+    let
+        gameStateLight g =
+            case g.gameState of
+                InPlay substate ->
+                    InPlay { substate | allowedWords = Dict.empty, remainingKanji = [] }
+
+                _ ->
+                    g.gameState
+    in
+    Dict.values model.kggames
+        |> List.map (\g -> { g | gameState = gameStateLight g })
+        |> List.map (sendToFrontend clientId << GameBroadcastTF)
+        |> Cmd.batch
 
 
 broadcastGame : KanjiGuessingGame -> Cmd BackendMsg

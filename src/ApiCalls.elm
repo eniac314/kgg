@@ -6,12 +6,14 @@ module ApiCalls exposing (..)
 import Codec exposing (..)
 import Delay
 import Dict
+import Env
 import Helpers exposing (httpErrorToString)
 import Http exposing (..)
 import Json.Decode as D
 import Json.Encode as E
 import Lamdera exposing (ClientId, SessionId, broadcast, sendToFrontend)
 import Parser exposing (..)
+import Set
 import StringDistance exposing (sift3Distance)
 import Types exposing (..)
 
@@ -36,18 +38,20 @@ gotJMdictSearchResults model gameId kanji res =
                                         |> List.map .keb
 
                                 newSubstate =
-                                    { substate | allowedWords = Dict.insert kanji sortedEntries substate.allowedWords }
+                                    { substate
+                                        | allowedWords = Dict.insert kanji sortedEntries substate.allowedWords
+                                        , initialBuffer = (\ib -> { ib | done = Set.insert kanji ib.done }) substate.initialBuffer
+                                    }
 
                                 newGame =
                                     { game
                                         | gameState = InPlay newSubstate
                                         , buffering = not isDone
-                                        , initialBuffer =
-                                            if game.initialBuffer then
-                                                not isDone
 
-                                            else
-                                                False
+                                        --if game.initialBuffer then
+                                        --    not isDone
+                                        --else
+                                        --    False
                                     }
 
                                 isDone =
@@ -69,7 +73,11 @@ gotJMdictSearchResults model gameId kanji res =
                                         Cmd.none
                             in
                             ( { model | kggames = Dict.insert gameId newGame model.kggames }
-                            , broadcastIfDone
+                            , if isDone then
+                                broadcast <| GameBroadcastTF { newGame | gameState = gameStateLight }
+
+                              else
+                                broadcast <| InitialBufferTF gameId newSubstate.initialBuffer
                             )
 
                         Err e ->
@@ -83,12 +91,12 @@ gotJMdictSearchResults model gameId kanji res =
 
 
 baseUrl =
-    --"http://localhost:8001/https://www.uminokirin.com"
-    "https://www.uminokirin.com"
+    case Env.mode of
+        Env.Production ->
+            "https://www.uminokirin.com"
 
-
-
---"https://www.uminokirin.local:8083"
+        Env.Development ->
+            "http://localhost:8001/https://www.uminokirin.com"
 
 
 getKanjiKeys =
