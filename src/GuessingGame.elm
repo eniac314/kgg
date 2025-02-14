@@ -197,10 +197,11 @@ view model =
             , el [ Font.size 14, centerX ] (text <| "Jeux en cours : " ++ String.fromInt (Dict.size model.kggames))
             ]
         , if not (isHostingGame model) && not (isCurrentlyPlaying model) then
-            Input.button (buttonStyle_ (mbHostGame /= Nothing))
-                { onPress = mbHostGame
-                , label = text "Héberger une nouvelle partie"
-                }
+            el [ centerX ] <|
+                Input.button (buttonStyle_ (mbHostGame /= Nothing))
+                    { onPress = mbHostGame
+                    , label = text "Héberger une nouvelle partie"
+                    }
 
           else
             Element.none
