@@ -192,7 +192,10 @@ view model =
     in
     column
         [ padding 15, spacing 20 ]
-        [ el [ Font.bold, Font.size 25 ] (text "Mini jeu Kanji")
+        [ column [ spacing 5, centerX ]
+            [ el [ Font.bold, Font.size 25, centerX ] (text "Mini jeu Kanji")
+            , el [ Font.size 14, centerX ] (text <| "Jeux en cours : " ++ String.fromInt (Dict.size model.kggames))
+            ]
         , if not (isHostingGame model) && not (isCurrentlyPlaying model) then
             Input.button (buttonStyle_ (mbHostGame /= Nothing))
                 { onPress = mbHostGame
@@ -494,6 +497,10 @@ updateKanjiSetJlpt kanjiset n =
 
 
 inPlayView gameId players thisPlayer substate buffer wrongWord buffering =
+    let
+        thisPlayerIsPlaying =
+            List.member thisPlayer players
+    in
     column
         [ padding 15
         , spacing 15
@@ -513,22 +520,11 @@ inPlayView gameId players thisPlayer substate buffer wrongWord buffering =
             ]
         , mainKanjiView substate.roundLength substate.timeTillRoundEnd substate.currentKanji
         , countDownView substate.startingCountdown substate.timeTillGameOver
+        , if thisPlayerIsPlaying then
+            addWordView gameId thisPlayer buffer wrongWord
 
-        --, el
-        --    [ centerX
-        --    , Border.color lightBlue
-        --    , Border.width 1
-        --    , Border.rounded 5
-        --    , Font.size 85
-        --    , padding 15
-        --    ]
-        --  <|
-        --    el [ moveDown 5 ] (text (String.fromChar substate.currentKanji))
-        --, row [] [ text "remainingKanji: ", paragraph [] <| List.map (\k -> text (String.fromChar k)) substate.remainingKanji ]
-        --, row [] [ text "bufferedKanji: ", paragraph [] <| List.map (\k -> text (String.fromChar k)) substate.bufferedKanji ]
-        --, row [] [ text "last updated: ", text <| String.fromInt game.lastUpdated ]
-        --, row [] [ text "roundLength: ", text <| String.fromInt substate.timeTillRoundEnd ]
-        , addWordView gameId thisPlayer buffer wrongWord
+          else
+            Element.none
         , paragraph
             [ Font.center
             , width fill

@@ -116,8 +116,6 @@ init url key =
       , now = Time.millisToPosix 0
       }
     , Cmd.none
-      --Cmd.batch [ Lamdera.sendToBackend <| PlayerInfoSubmittedTB "florian" "" ]
-      --, getKanjiKeys
     )
 
 

@@ -205,6 +205,9 @@ runGames model now =
                 , newCmd :: cmds
                 )
 
+            else if gameOrphaned model.players g then
+                ( { currentModel | kggames = Dict.remove g.gameId currentModel.kggames }, cmds )
+
             else
                 ( currentModel, cmds )
         )
@@ -232,10 +235,10 @@ runGame model now gameId =
                     toNextRound timeStampedModel gameId
 
                 Victory _ ->
-                    ( timeStampedModel, Cmd.none )
+                    cleanGame timeStampedModel gameId
 
                 GameOver _ ->
-                    ( timeStampedModel, Cmd.none )
+                    cleanGame timeStampedModel gameId
 
         _ ->
             ( model, Cmd.none )
@@ -453,6 +456,28 @@ loadNextKanji model gameId =
 
         Nothing ->
             ( model, Cmd.none )
+
+
+cleanGame : BackendModel -> GameId -> ( BackendModel, Cmd BackendMsg )
+cleanGame model gameId =
+    ( { model | kggames = Dict.remove gameId model.kggames }, Cmd.none )
+
+
+gameOrphaned :
+    Dict.Dict
+        Lamdera.SessionId
+        { player : Player
+        , phpSessionId : PhpSessionId
+        }
+    -> KanjiGuessingGame
+    -> Bool
+gameOrphaned players game =
+    let
+        currentPlayers =
+            Dict.values players
+                |> List.map .player
+    in
+    not <| List.member game.host currentPlayers
 
 
 gameRunning : KanjiGuessingGame -> Bool

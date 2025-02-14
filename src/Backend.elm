@@ -1,8 +1,5 @@
 module Backend exposing (..)
 
---import DebugApp
---import Debuggy.App
-
 import ApiCalls exposing (..)
 import Delay
 import Dict
@@ -21,14 +18,12 @@ type alias Model =
 
 app =
     Lamdera.backend
-        --NoOpBackendMsg
-        --"2238138fd1560b4c"
         { init = init
         , update = update
         , updateFromFrontend = updateFromFrontend
         , subscriptions =
             \m ->
-                if gamesRunning m then
+                if Dict.size m.kggames > 0 then
                     Time.every 1000 RunGames
 
                 else
@@ -43,8 +38,6 @@ init =
       , players = Dict.empty
       , seed = Random.initialSeed 0
       }
-      --, getWords '語'
-      --, Cmd.none
     , Cmd.batch
         [ Task.perform GotTime Time.now ]
     )
@@ -53,19 +46,14 @@ init =
 update : BackendMsg -> Model -> ( Model, Cmd BackendMsg )
 update msg model =
     case msg of
-        -- A new client has joined! Send them history, and let everyone know
         ClientConnected sessionId clientId ->
             ( model
-              --{model | players =}
             , Cmd.batch []
-              --[ broadcast (MessageReceived (Joined clientId))
-              --, sendToFrontend clientId (HistoryReceived model.messages)
-              --]
             )
 
         -- A client has disconnected, let everyone know
         ClientDisconnected sessionId clientId ->
-            ( model
+            ( { model | players = Dict.remove sessionId model.players }
             , Cmd.none
             )
 
