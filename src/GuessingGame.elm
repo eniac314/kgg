@@ -211,7 +211,9 @@ view model =
             Nothing ->
                 column
                     [ spacing 30 ]
-                    (List.map (\g -> gameView g model.kggConfigInputs model.thisPlayer model.kggWordInput model.kggWrongWordBuffer) (Dict.values model.kggames))
+                    (List.map (\g -> gameView g model.kggConfigInputs model.thisPlayer model.kggWordInput model.kggWrongWordBuffer)
+                        (Dict.values model.kggames |> List.reverse)
+                    )
         ]
 
 

@@ -205,7 +205,7 @@ runGames model now =
                 , newCmd :: cmds
                 )
 
-            else if gameOrphaned model.players g then
+            else if gameOrphaned model.players now g then
                 ( { currentModel | kggames = Dict.remove g.gameId currentModel.kggames }, cmds )
 
             else
@@ -469,15 +469,19 @@ gameOrphaned :
         { player : Player
         , phpSessionId : PhpSessionId
         }
+    -> Time.Posix
     -> KanjiGuessingGame
     -> Bool
-gameOrphaned players game =
+gameOrphaned players now game =
     let
         currentPlayers =
             Dict.values players
                 |> List.map .player
+
+        tooOld =
+            Time.posixToMillis now - game.lastUpdated > 1000 * 60
     in
-    not <| List.member game.host currentPlayers
+    (not <| List.member game.host currentPlayers) || tooOld
 
 
 gameRunning : KanjiGuessingGame -> Bool
