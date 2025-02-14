@@ -490,6 +490,12 @@ gameRunning game =
         InPlay _ ->
             True
 
+        GameOver _ ->
+            True
+
+        Victory _ ->
+            True
+
         _ ->
             False
 
