@@ -104,8 +104,8 @@ leaveGame model player gameId =
             ( model, Cmd.none )
 
 
-launchPlay : BackendModel -> GameId -> ( BackendModel, Cmd BackendMsg )
-launchPlay model gameId =
+initialLoading : BackendModel -> GameId -> ( BackendModel, Cmd BackendMsg )
+initialLoading model gameId =
     case Dict.get gameId model.kggames of
         Just game ->
             case game.gameState of
@@ -125,18 +125,11 @@ launchPlay model gameId =
                         currentKanji =
                             List.head bufferedKanji |> Maybe.withDefault '❌'
 
-                        allTheWords =
-                            Dict.empty
-
                         newGameState =
-                            { score = 0
-                            , currentKanji = currentKanji
+                            { currentKanji = currentKanji
                             , remainingKanji = kanjiForThisGame
                             , bufferedKanji = List.tail bufferedKanji |> Maybe.withDefault []
-                            , kanjiSeen = []
-                            , words = Dict.empty
-                            , allowedWords = allTheWords
-                            , requestedSkip = []
+                            , allowedWords = Dict.empty
                             , timeTillRoundEnd = config.roundLength
                             , timeTillGameOver = config.startingCountdown
                             , roundLength = config.roundLength
@@ -145,12 +138,50 @@ launchPlay model gameId =
                             }
 
                         newGame =
-                            { game | gameState = InPlay <| newGameState, buffering = True }
+                            { game | gameState = Loading <| newGameState, buffering = True }
                     in
                     ( { model | kggames = Dict.insert gameId newGame model.kggames, seed = newSeed }
                     , Cmd.batch
                         [ ApiCalls.getAllTheWords gameId bufferedKanji
-                        , broadcast <| InitialBufferTF gameId newGameState.initialBuffer
+                        , broadcastGame newGame
+                        ]
+                    )
+
+                _ ->
+                    ( model, Cmd.none )
+
+        _ ->
+            ( model, Cmd.none )
+
+
+launchPlay : BackendModel -> GameId -> ( BackendModel, Cmd BackendMsg )
+launchPlay model gameId =
+    case Dict.get gameId model.kggames of
+        Just game ->
+            case game.gameState of
+                Loading substate ->
+                    let
+                        newGameState =
+                            { score = 0
+                            , currentKanji = substate.currentKanji
+                            , remainingKanji = substate.remainingKanji
+                            , bufferedKanji = substate.bufferedKanji
+                            , kanjiSeen = []
+                            , words = Dict.empty
+                            , allowedWords = substate.allowedWords
+                            , requestedSkip = []
+                            , timeTillRoundEnd = substate.roundLength
+                            , timeTillGameOver = substate.startingCountdown
+                            , roundLength = substate.roundLength
+                            , startingCountdown = substate.startingCountdown
+                            }
+
+                        newGame =
+                            { game | gameState = InPlay <| newGameState }
+                    in
+                    ( { model | kggames = Dict.insert gameId newGame model.kggames }
+                    , Cmd.batch
+                        [ broadcastGame newGame
                         ]
                     )
 
@@ -192,6 +223,9 @@ runGame model now gameId =
             in
             case game.gameState of
                 Lobby config ->
+                    initialLoading timeStampedModel gameId
+
+                Loading substate ->
                     launchPlay timeStampedModel gameId
 
                 InPlay _ ->
@@ -327,45 +361,44 @@ toNextRound model gameId =
         Just game ->
             case game.gameState of
                 InPlay substate ->
-                    if substate.initialBuffer.bufferSize /= Set.size substate.initialBuffer.done then
-                        ( model, Cmd.none )
+                    --if substate.initialBuffer.bufferSize /= Set.size substate.initialBuffer.done then
+                    --    ( model, Cmd.none )
+                    --else
+                    let
+                        noMoreTime =
+                            substate.timeTillGameOver <= 1
 
-                    else
-                        let
-                            noMoreTime =
-                                substate.timeTillGameOver <= 1
+                        roundOver =
+                            substate.timeTillRoundEnd <= 1
 
-                            roundOver =
-                                substate.timeTillRoundEnd <= 1
+                        newGameState =
+                            { substate
+                                | timeTillRoundEnd = max 0 <| substate.timeTillRoundEnd - 1
+                                , timeTillGameOver = max 0 <| substate.timeTillGameOver - 1
+                            }
 
-                            newGameState =
-                                { substate
-                                    | timeTillRoundEnd = max 0 <| substate.timeTillRoundEnd - 1
-                                    , timeTillGameOver = max 0 <| substate.timeTillGameOver - 1
-                                }
-
-                            updateGame gs =
-                                let
-                                    newGame =
-                                        { game | gameState = InPlay gs }
-                                in
-                                { model | kggames = Dict.insert gameId newGame model.kggames }
-                        in
-                        if noMoreTime then
+                        updateGame gs =
                             let
                                 newGame =
-                                    { game | gameState = GameOver { score = substate.score } }
+                                    { game | gameState = InPlay gs }
                             in
-                            ( { model | kggames = Dict.insert gameId newGame model.kggames }, broadcastGame newGame )
+                            { model | kggames = Dict.insert gameId newGame model.kggames }
+                    in
+                    if noMoreTime then
+                        let
+                            newGame =
+                                { game | gameState = GameOver { score = substate.score } }
+                        in
+                        ( { model | kggames = Dict.insert gameId newGame model.kggames }, broadcastGame newGame )
 
-                        else if allPlayerRequestedNextKanji game && (not <| game.buffering) then
-                            loadNextKanji (updateGame { newGameState | requestedSkip = [] }) gameId
+                    else if allPlayerRequestedNextKanji game && (not <| game.buffering) then
+                        loadNextKanji (updateGame { newGameState | requestedSkip = [] }) gameId
 
-                        else if roundOver then
-                            loadNextKanji (updateGame newGameState) gameId
+                    else if roundOver then
+                        loadNextKanji (updateGame newGameState) gameId
 
-                        else
-                            ( updateGame newGameState, broadcastGameTimes { game | gameState = InPlay newGameState } )
+                    else
+                        ( updateGame newGameState, broadcastGameTimes { game | gameState = InPlay newGameState } )
 
                 _ ->
                     ( model, Cmd.none )

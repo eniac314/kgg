@@ -116,6 +116,9 @@ updateFromFrontend sessionId clientId msg model =
         UpdateConfigTB gameId config ->
             updateConfig model gameId config
 
+        LoadInitialDataTB gameId now ->
+            runGame model now gameId
+
         StartTB gameId now ->
             runGame model now gameId
 

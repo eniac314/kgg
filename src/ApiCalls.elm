@@ -23,35 +23,62 @@ gotJMdictSearchResults model gameId kanji res =
     case Dict.get gameId model.kggames of
         Just game ->
             case game.gameState of
-                InPlay substate ->
+                Loading substate ->
                     case res of
                         Ok entries ->
                             let
-                                relevance e =
-                                    List.map (\k -> sift3Distance k.keb (String.fromChar kanji)) e.k_ele
-                                        |> List.minimum
-                                        |> Maybe.withDefault 100000
-
-                                sortedEntries =
-                                    List.sortBy relevance entries
-                                        |> List.concatMap .k_ele
+                                trimmedEntries =
+                                    List.concatMap .k_ele entries
                                         |> List.map .keb
 
                                 newSubstate =
                                     { substate
-                                        | allowedWords = Dict.insert kanji sortedEntries substate.allowedWords
+                                        | allowedWords = Dict.insert kanji trimmedEntries substate.allowedWords
                                         , initialBuffer = (\ib -> { ib | done = Set.insert kanji ib.done }) substate.initialBuffer
+                                    }
+
+                                isDone =
+                                    List.all (\k -> List.member k (Dict.keys newSubstate.allowedWords)) substate.bufferedKanji
+
+                                newGame =
+                                    { game
+                                        | gameState = Loading newSubstate
+                                        , buffering = not isDone
+                                    }
+
+                                gameStateLight =
+                                    case newGame.gameState of
+                                        Loading st ->
+                                            Loading { st | allowedWords = Dict.empty, remainingKanji = [] }
+
+                                        _ ->
+                                            newGame.gameState
+                            in
+                            ( { model | kggames = Dict.insert gameId newGame model.kggames }
+                            , broadcast <|
+                                GameBroadcastTF { newGame | gameState = gameStateLight }
+                            )
+
+                        Err e ->
+                            ( model, broadcast (ToFrontendMsgTF (httpErrorToString e)) )
+
+                InPlay substate ->
+                    case res of
+                        Ok entries ->
+                            let
+                                trimmedEntries =
+                                    List.concatMap .k_ele entries
+                                        |> List.map .keb
+
+                                newSubstate =
+                                    { substate
+                                        | allowedWords = Dict.insert kanji trimmedEntries substate.allowedWords
                                     }
 
                                 newGame =
                                     { game
                                         | gameState = InPlay newSubstate
                                         , buffering = not isDone
-
-                                        --if game.initialBuffer then
-                                        --    not isDone
-                                        --else
-                                        --    False
                                     }
 
                                 isDone =
@@ -64,20 +91,9 @@ gotJMdictSearchResults model gameId kanji res =
 
                                         _ ->
                                             newGame.gameState
-
-                                broadcastIfDone =
-                                    if isDone then
-                                        broadcast <| GameBroadcastTF { newGame | gameState = gameStateLight }
-
-                                    else
-                                        Cmd.none
                             in
                             ( { model | kggames = Dict.insert gameId newGame model.kggames }
-                            , if isDone then
-                                broadcast <| GameBroadcastTF { newGame | gameState = gameStateLight }
-
-                              else
-                                broadcast <| InitialBufferTF gameId newSubstate.initialBuffer
+                            , broadcast <| GameBroadcastTF { newGame | gameState = gameStateLight }
                             )
 
                         Err e ->

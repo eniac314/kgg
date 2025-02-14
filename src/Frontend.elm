@@ -177,6 +177,9 @@ update msg model =
         KggWordInput word ->
             Kgg.wordInput model word
 
+        KggLoadInitialData gameId ->
+            Kgg.loadInitialData model gameId
+
         KggStartGame gameId ->
             Kgg.startGame model gameId
 
@@ -224,33 +227,24 @@ updateFromBackend msg model =
         ToFrontendMsgTF s ->
             ( { model | message = s }, Cmd.none )
 
-        InitialBufferTF gameId buffer ->
-            case Dict.get gameId model.kggames of
-                Just game ->
-                    case game.gameState of
-                        InPlay substate ->
-                            let
-                                newSubstate =
-                                    InPlay { substate | initialBuffer = buffer }
-
-                                newGame =
-                                    { game | gameState = newSubstate }
-                            in
-                            ( { model | kggames = Dict.insert gameId newGame model.kggames }, Cmd.none )
-
-                        _ ->
-                            ( model, Cmd.none )
-
-                Nothing ->
-                    ( model, Cmd.none )
-
         GameBroadcastTF game ->
-            ( { model
-                | kggames = Dict.insert game.gameId game model.kggames
-                , kggWordInput = Nothing
-              }
-            , Cmd.none
-            )
+            let
+                newModel =
+                    { model
+                        | kggames = Dict.insert game.gameId game model.kggames
+                        , kggWordInput = Nothing
+                    }
+            in
+            case game.gameState of
+                Loading substate ->
+                    if Kgg.currentGameInitialLoadingStatus substate == 100 then
+                        Kgg.startGame newModel game.gameId
+
+                    else
+                        ( newModel, Cmd.none )
+
+                _ ->
+                    ( newModel, Cmd.none )
 
         GameTimesBroadcastTF data ->
             case Dict.get data.gameId model.kggames of

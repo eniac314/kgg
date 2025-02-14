@@ -72,6 +72,7 @@ type FrontendMsg
     | KggSetCustomKanjiSet String
     | KggSetKanjiSet KanjiSet Int
     | KggStartGame GameId
+    | KggLoadInitialData GameId
     | KggWordInput String
     | KggHostGame
     | KggJoinGame Int
@@ -92,6 +93,7 @@ type ToBackend
     | JoinTB Player GameId
     | LeaveTB Player GameId
     | UpdateConfigTB GameId { kanjiSet : KanjiSet, roundLength : Int, startingCountdown : Int }
+    | LoadInitialDataTB GameId Time.Posix
     | StartTB GameId Time.Posix
     | RequestNextKanjiTB GameId Player
     | AddWordTB GameId Player String
@@ -105,13 +107,14 @@ type BackendMsg
     | GetKeys
     | GotKeys (Result Http.Error String)
     | GotTime Time.Posix
+      --| LaunchGame GameId
     | RunGames Time.Posix
     | NoOpBackendMsg
 
 
 type ToFrontend
     = ToFrontendMsgTF String
-    | InitialBufferTF GameId { bufferSize : Int, done : Set Char }
+      --| InitialBufferTF GameId { bufferSize : Int, done : Set Char }
     | GameBroadcastTF KanjiGuessingGame
     | GameTimesBroadcastTF
         { gameId : GameId
@@ -161,8 +164,6 @@ type alias KanjiGuessingGame =
     , gameState : KGGameState
     , lastUpdated : Int
     , buffering : Bool
-
-    --, roundLength : Int
     }
 
 
@@ -172,11 +173,17 @@ type KGGameState
         , roundLength : Int
         , startingCountdown : Int
         }
-      --| Loading
-      --    { initialBuffer : { bufferSize : Int, done : Set Char }
-      --    , bufferedKanji : List Char
-      --    , allowedWords : Dict Char (List String)
-      --    }
+    | Loading
+        { initialBuffer : { bufferSize : Int, done : Set Char }
+        , currentKanji : Char
+        , remainingKanji : List Char
+        , bufferedKanji : List Char
+        , allowedWords : Dict Char (List String)
+        , timeTillRoundEnd : Int
+        , timeTillGameOver : Int
+        , roundLength : Int
+        , startingCountdown : Int
+        }
     | InPlay
         { score : Int
         , currentKanji : Char
@@ -190,7 +197,6 @@ type KGGameState
         , timeTillGameOver : Int
         , roundLength : Int
         , startingCountdown : Int
-        , initialBuffer : { bufferSize : Int, done : Set Char }
         }
     | Victory { score : Int }
     | GameOver { score : Int }

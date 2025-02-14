@@ -75,6 +75,21 @@ leaveGame model gameId =
             ( model, Cmd.none )
 
 
+loadInitialData model gameId =
+    case ( model.thisPlayer, get gameId model.kggames ) of
+        ( Just p, Just { host } ) ->
+            if p == host then
+                ( model
+                , sendToBackendWithTime (\t -> LoadInitialDataTB gameId t)
+                )
+
+            else
+                ( model, Cmd.none )
+
+        _ ->
+            ( model, Cmd.none )
+
+
 startGame model gameId =
     case ( model.thisPlayer, get gameId model.kggames ) of
         ( Just p, Just { host } ) ->
@@ -229,7 +244,7 @@ isCurrentlyPlaying model =
 
 
 currentGameInitialLoadingStatus gs =
-    round <| 100 * toFloat gs.initialBuffer.bufferSize / (toFloat <| Set.size gs.initialBuffer.done)
+    round <| 100 * (toFloat <| Set.size gs.initialBuffer.done) / toFloat gs.initialBuffer.bufferSize
 
 
 getCurrentGame : FrontendModel -> Maybe KanjiGuessingGame
@@ -321,16 +336,10 @@ gameStateView gameState configInputs players thisPlayer gameId isHost hasJoined 
         Lobby config ->
             lobbyView config configInputs gameId players thisPlayer isHost hasJoined buffering
 
+        Loading substate ->
+            loadingView substate
+
         InPlay substate ->
-            --if currentGameInitialLoadingStatus substate < 100 then
-            --    column
-            --        [ padding 15
-            --        , spacing 15
-            --        , centerX
-            --        , width (px 400)
-            --        ]
-            --        [ el [] (text <| "Loading " ++ String.fromInt (currentGameInitialLoadingStatus substate) ++ "%") ]
-            --else
             inPlayView gameId players thisPlayer substate buffer wrongWord buffering
 
         GameOver substate ->
@@ -413,7 +422,7 @@ lobbyView config configInputs gameId players thisPlayer isHost hasJoined bufferi
                             }
                     , el [ centerX ] <|
                         Input.button (buttonStyle_ True)
-                            { onPress = Just (KggStartGame gameId)
+                            { onPress = Just (KggLoadInitialData gameId)
                             , label = text "Commencer"
                             }
                     ]
@@ -433,6 +442,16 @@ lobbyView config configInputs gameId players thisPlayer isHost hasJoined bufferi
                     , label = text "Quitter"
                     }
         ]
+
+
+loadingView substate =
+    column
+        [ padding 15
+        , spacing 15
+        , centerX
+        , width (px 400)
+        ]
+        [ el [] (text <| "Loading " ++ String.fromInt (currentGameInitialLoadingStatus substate) ++ "%") ]
 
 
 configView config configInputs =
