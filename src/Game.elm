@@ -201,7 +201,7 @@ runGames model now =
                     ( newModel, newCmd ) =
                         runGame currentModel now g.gameId
                 in
-                ( { currentModel | kggames = Dict.union newModel.kggames currentModel.kggames }
+                ( { currentModel | kggames = newModel.kggames }
                 , newCmd :: cmds
                 )
 
