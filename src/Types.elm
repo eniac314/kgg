@@ -31,6 +31,7 @@ type alias FrontendModel =
         }
     , isEmbedded : Maybe Bool
     , now : Time.Posix
+    , kanjidic : Dict Char KanjidicEntry
     }
 
 
@@ -69,8 +70,9 @@ type FrontendMsg
     | UsernameInput String
     | SendUser
     | ReqGetKey
-    | KggSetCustomKanjiSet String
-    | KggSetKanjiSet KanjiSet Int
+    | KggSetCustomKanjiSet GameId String
+    | KggSetKanjiSet KanjiSet GameId
+    | KggSetShowingHints GameId Bool
     | KggStartGame GameId
     | KggLoadInitialData GameId
     | KggWordInput String
@@ -82,6 +84,7 @@ type FrontendMsg
     | GotTimeF Time.Posix
     | SendToBackendWithTime ToBackend
     | KeyboardMsg Keyboard.Msg
+    | GotJMdictSearchResultsEndGame GameId String (Result Http.Error (List JapDictEntry))
     | NoOpFrontendMsg
 
 
@@ -89,10 +92,10 @@ type ToBackend
     = GetKeysTB
     | PlayerInfoSubmittedTB Username PhpSessionId
     | RequestInitialGamesBroadCastTB
-    | CreateGameTB Player { kanjiSet : KanjiSet, roundLength : Int, startingCountdown : Int } Time.Posix
+    | CreateGameTB Player GameConfig Time.Posix
     | JoinTB Player GameId
     | LeaveTB Player GameId
-    | UpdateConfigTB GameId { kanjiSet : KanjiSet, roundLength : Int, startingCountdown : Int }
+    | UpdateConfigTB GameId GameConfig
     | LoadInitialDataTB GameId Time.Posix
     | StartTB GameId Time.Posix
     | RequestNextKanjiTB GameId Player
@@ -104,6 +107,7 @@ type BackendMsg
     = ClientConnected SessionId ClientId
     | ClientDisconnected SessionId ClientId
     | GotJMdictSearchResults GameId Char (Result Http.Error (List JapDictEntry))
+    | GotKanjidicEntries GameId (Result Http.Error (List KanjidicEntry))
     | GetKeys
     | GotKeys (Result Http.Error String)
     | GotTime Time.Posix
@@ -116,6 +120,7 @@ type ToFrontend
     = ToFrontendMsgTF String
       --| InitialBufferTF GameId { bufferSize : Int, done : Set Char }
     | GameBroadcastTF KanjiGuessingGame
+    | GameCanceledTF GameId
     | GameTimesBroadcastTF
         { gameId : GameId
         , lastUpdated : Int
@@ -125,6 +130,7 @@ type ToFrontend
         }
     | WrongWordTF String
     | PlayerInfoRegisteredTF Player
+    | KanjiDictEntriesTF (List KanjidicEntry)
     | NoOpTF
 
 
@@ -172,6 +178,7 @@ type KGGameState
         { kanjiSet : KanjiSet
         , roundLength : Int
         , startingCountdown : Int
+        , showingHints : Bool
         }
     | Loading
         { initialBuffer : { bufferSize : Int, done : Set Char }
@@ -179,10 +186,13 @@ type KGGameState
         , remainingKanji : List Char
         , bufferedKanji : List Char
         , allowedWords : Dict Char (List String)
+
+        --, kanjidic : Dict Char KanjidicEntry
         , timeTillRoundEnd : Int
         , timeTillGameOver : Int
         , roundLength : Int
         , startingCountdown : Int
+        , showingHints : Bool
         }
     | InPlay
         { score : Int
@@ -192,19 +202,30 @@ type KGGameState
         , kanjiSeen : List Char
         , words : Dict ClientId (List String)
         , allowedWords : Dict Char (List String)
+
+        --, kanjidic : Dict Char KanjidicEntry
         , requestedSkip : List Player
         , timeTillRoundEnd : Int
         , timeTillGameOver : Int
         , roundLength : Int
         , startingCountdown : Int
+        , showingHints : Bool
         }
-    | Victory { score : Int }
-    | GameOver { score : Int }
+    | Victory { score : Int, words : Dict String (List JapDictEntry) }
+    | GameOver { score : Int, words : Dict String (List JapDictEntry) }
 
 
 type KanjiSet
     = JlptSet (List Int)
     | CustomKanjiSet (List Char)
+
+
+type alias GameConfig =
+    { kanjiSet : KanjiSet
+    , roundLength : Int
+    , startingCountdown : Int
+    , showingHints : Bool
+    }
 
 
 
@@ -239,6 +260,26 @@ type alias KanjidicEntry =
     , examples : List ( String, String )
     , decomposition : Maybe String
     , etymology : Maybe { hint : Maybe String, etym : Maybe String }
+
+    -- Jitenon
+    , jitenon : Maybe JitenonKanji2
+    }
+
+
+type alias JitenonKanji2 =
+    { kanji : String
+    , kakuSuu : String
+    , buShu : String
+    , kankenKyuu : Maybe String
+    , gakuNen : Maybe String
+    , onYomi : List String
+    , kunYomi : List String
+    , imi : List String
+    , nariTachi : Maybe String
+    , shuBetsu : List String
+    , unicode : String
+    , jitenonNumber : Int
+    , nanDoku : List String
     }
 
 

@@ -61,6 +61,9 @@ update msg model =
         GotJMdictSearchResults gameId kanji res ->
             gotJMdictSearchResults model gameId kanji res
 
+        GotKanjidicEntries gameId res ->
+            gotKanjidicEntries model gameId res
+
         GetKeys ->
             ( model, Cmd.batch [ getKanjiKeys ] )
 

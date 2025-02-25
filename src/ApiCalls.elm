@@ -18,6 +18,49 @@ import StringDistance exposing (sift3Distance)
 import Types exposing (..)
 
 
+gotKanjidicEntries : BackendModel -> GameId -> Result Http.Error (List KanjidicEntry) -> ( BackendModel, Cmd BackendMsg )
+gotKanjidicEntries model gameId res =
+    case res of
+        Ok entries ->
+            ( model, broadcast (KanjiDictEntriesTF entries) )
+
+        _ ->
+            ( model, Cmd.none )
+
+
+
+--case Dict.get gameId model.kggames of
+--    Just game ->
+--        case game.gameState of
+--            Loading substate ->
+--                case res of
+--                    Ok entries ->
+--                        let
+--                            newSubstate =
+--                                { substate
+--                                    | kanjidic =
+--                                        List.foldr
+--                                            (\k acc -> Dict.insert (k.kanji |> String.toList |> List.head |> Maybe.withDefault '❌') k acc)
+--                                            substate.kanjidic
+--                                            entries
+--                                }
+--                            newGame =
+--                                { game
+--                                    | gameState = Loading newSubstate
+--                                }
+--                        in
+--                        ( { model | kggames = Dict.insert gameId newGame model.kggames }
+--                        , broadcast <|
+--                            GameBroadcastTF { newGame | gameState = Loading newSubstate }
+--                        )
+--                    _ ->
+--                        ( model, Cmd.none )
+--            _ ->
+--                ( model, Cmd.none )
+--    _ ->
+--        ( model, Cmd.none )
+
+
 gotJMdictSearchResults : BackendModel -> GameId -> Char -> Result Http.Error (List JapDictEntry) -> ( BackendModel, Cmd BackendMsg )
 gotJMdictSearchResults model gameId kanji res =
     case Dict.get gameId model.kggames of
@@ -126,6 +169,15 @@ getKanjiKeys =
         }
 
 
+getKanjisDatabase : GameId -> List String -> Cmd BackendMsg
+getKanjisDatabase gameId ks =
+    Http.post
+        { url = baseUrl ++ "/api/getKanjis"
+        , body = Http.jsonBody (E.object [ ( "kanjis", E.list E.string ks ) ])
+        , expect = Http.expectJson (GotKanjidicEntries gameId) (D.list (Codec.decoder kanjidicEntryCodec))
+        }
+
+
 getWords : GameId -> Char -> Cmd BackendMsg
 getWords gameId kanji =
     --let
@@ -138,7 +190,7 @@ getWords gameId kanji =
             E.object
                 [ ( "searchStr", E.string (String.fromChar kanji) )
                 , ( "hasKanji", E.bool True )
-                , ( "targetLanguage", E.string "SearchInFrench" )
+                , ( "targetLanguage", E.string "SearchEverything" )
                 ]
                 |> Http.jsonBody
         , expect = Http.expectJson (GotJMdictSearchResults gameId kanji) (D.list (Codec.decoder japDictEntryCodec))
@@ -149,6 +201,154 @@ getAllTheWords : GameId -> List Char -> Cmd BackendMsg
 getAllTheWords gameId kanjiList =
     List.map (getWords gameId) kanjiList
         |> Cmd.batch
+
+
+getWordsEndGame : GameId -> List String -> Cmd FrontendMsg
+getWordsEndGame gameId words =
+    let
+        getEntry w =
+            Http.post
+                { url = baseUrl ++ "/api/jmDictSearchExactMatchFromJap"
+                , body =
+                    E.object
+                        [ ( "searchStr", E.string w )
+                        , ( "hasKanji", E.bool True )
+                        , ( "targetLanguage", E.string "SearchEverything" )
+                        ]
+                        |> Http.jsonBody
+                , expect = Http.expectJson (GotJMdictSearchResultsEndGame gameId w) (D.list (Codec.decoder japDictEntryCodec))
+                }
+    in
+    List.map getEntry words
+        |> Cmd.batch
+
+
+
+-------------------------------------------------------------------------------
+-- kanjidic codec
+
+
+kanjidicEntryCodec : Codec.Codec KanjidicEntry
+kanjidicEntryCodec =
+    Codec.object KanjidicEntry
+        |> Codec.field "kanji" .kanji Codec.string
+        |> Codec.field "cpValue"
+            .cpValues
+            (Codec.list
+                (Codec.tuple Codec.string Codec.string)
+            )
+        |> Codec.field "radValues"
+            .radValues
+            (Codec.list
+                (Codec.tuple Codec.string Codec.int)
+            )
+        |> Codec.field "grade" .grade (Codec.maybe Codec.int)
+        |> Codec.field "strokeCount" .strokeCount (Codec.list Codec.int)
+        |> Codec.field "variants"
+            .variants
+            (Codec.list
+                (Codec.tuple
+                    (Codec.tuple Codec.string Codec.string)
+                    (Codec.maybe Codec.string)
+                )
+            )
+        |> Codec.field "freq" .freq (Codec.maybe Codec.int)
+        |> Codec.field "radName" .radName (Codec.list Codec.string)
+        |> Codec.field "jlpt" .jlpt (Codec.maybe Codec.int)
+        |> Codec.field "dicNumber"
+            .dicNumber
+            (Codec.list
+                (Codec.tuple Codec.string Codec.string)
+            )
+        |> Codec.field "queryCode"
+            .queryCode
+            (Codec.list
+                (Codec.tuple Codec.string Codec.string)
+            )
+        |> Codec.field "skipMissclass"
+            .skipMissclass
+            (Codec.list
+                (Codec.tuple Codec.string Codec.string)
+            )
+        |> Codec.field "readings"
+            .readings
+            (Codec.list
+                (Codec.object (\rType onType rStatus reading -> { rType = rType, onType = onType, rStatus = rStatus, reading = reading })
+                    |> Codec.field "rType" .rType Codec.string
+                    |> Codec.field "onType" .onType (Codec.maybe Codec.string)
+                    |> Codec.field "rStatus" .rStatus (Codec.maybe Codec.string)
+                    |> Codec.field "reading" .reading Codec.string
+                    |> Codec.buildObject
+                )
+            )
+        |> Codec.field "meanings"
+            .meanings
+            (Codec.list
+                (Codec.tuple Codec.string Codec.string)
+            )
+        |> Codec.field "nanori" .nanori (Codec.list Codec.string)
+        |> Codec.field "coreMeanings"
+            .coreMeanings
+            (Codec.list
+                (Codec.tuple Codec.string Codec.string)
+            )
+        |> Codec.field "examples"
+            .examples
+            (Codec.list
+                (Codec.tuple Codec.string Codec.string)
+            )
+        |> Codec.field "decomposition"
+            .decomposition
+            (Codec.maybe
+                Codec.string
+            )
+        |> Codec.maybeField "etymology"
+            .etymology
+            (Codec.object
+                (\hint etym ->
+                    { hint = hint
+                    , etym = etym
+                    }
+                )
+                |> Codec.field "hint" .hint (Codec.maybe Codec.string)
+                |> Codec.field "etym" .etym (Codec.maybe Codec.string)
+                |> Codec.buildObject
+            )
+        |> Codec.field "extra" .jitenon (Codec.maybe jitenonKanji2)
+        |> Codec.buildObject
+
+
+jitenonKanji2 : Codec JitenonKanji2
+jitenonKanji2 =
+    Codec.object JitenonKanji2
+        |> Codec.field "漢字" .kanji Codec.string
+        |> Codec.field "画数" .kakuSuu Codec.string
+        |> Codec.field "部首" .buShu Codec.string
+        |> Codec.field "漢検級" .kankenKyuu (Codec.nullable Codec.string)
+        |> Codec.field "学年" .gakuNen (Codec.nullable Codec.string)
+        |> Codec.field "音読み" .onYomi (nullableList Codec.string)
+        |> Codec.field "訓読み" .kunYomi (nullableList Codec.string)
+        |> Codec.field "意味" .imi (nullableList Codec.string)
+        |> Codec.field "成り立ち" .nariTachi (Codec.nullable Codec.string)
+        |> Codec.field "種別" .shuBetsu (nullableList Codec.string)
+        |> Codec.field "ユニコード" .unicode Codec.string
+        |> Codec.field "インデックス" .jitenonNumber Codec.int
+        |> Codec.field "難読" .nanDoku (nullableList Codec.string)
+        |> Codec.buildObject
+
+
+nullableList c =
+    Codec.map
+        (Maybe.withDefault [])
+        (\xs ->
+            case xs of
+                [] ->
+                    Nothing
+
+                _ ->
+                    Just xs
+        )
+        (Codec.nullable (Codec.list c))
 
 
 

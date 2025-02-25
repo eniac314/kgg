@@ -60,3 +60,19 @@ mbStr s =
 
     else
         Just s
+
+
+isHanzi c =
+    let
+        code =
+            Char.toCode c
+    in
+    c == '々' || (code >= 0x4E00 && code <= 0x9FBF)
+
+
+isKana c =
+    let
+        code =
+            Char.toCode c
+    in
+    code >= 0x3040 && code <= 0x30FF

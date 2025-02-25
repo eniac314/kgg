@@ -1,5 +1,6 @@
 port module Frontend exposing (..)
 
+import ApiCalls exposing (getWordsEndGame)
 import Browser exposing (UrlRequest(..))
 import Browser.Navigation as Nav
 import Dict
@@ -114,6 +115,7 @@ init url key =
             }
       , isEmbedded = Nothing
       , now = Time.millisToPosix 0
+      , kanjidic = Dict.empty
       }
     , Cmd.none
     )
@@ -157,11 +159,14 @@ update msg model =
         ReqGetKey ->
             ( model, Lamdera.sendToBackend GetKeysTB )
 
-        KggSetCustomKanjiSet kanjiStr ->
-            Kgg.setCustomKanjiSet model kanjiStr
+        KggSetCustomKanjiSet gameId kanjiStr ->
+            Kgg.setCustomKanjiSet model gameId kanjiStr
 
         KggSetKanjiSet kanjiSet gameId ->
             Kgg.setKanjiSet model kanjiSet gameId
+
+        KggSetShowingHints gameId bool ->
+            Kgg.setShowingHints model gameId bool
 
         KggHostGame ->
             Kgg.hostGame model
@@ -204,6 +209,9 @@ update msg model =
         KeyboardMsg keyMsg ->
             Kgg.keyboardMsg model keyMsg
 
+        GotJMdictSearchResultsEndGame gameId word res ->
+            Kgg.gotJMdictSearchResultsEndGame model gameId word res
+
         NoOpFrontendMsg ->
             ( model, Cmd.none )
 
@@ -241,8 +249,17 @@ updateFromBackend msg model =
                     else
                         ( newModel, Cmd.none )
 
+                Victory { words } ->
+                    ( newModel, getWordsEndGame game.gameId (Dict.keys words) )
+
+                GameOver { words } ->
+                    ( newModel, getWordsEndGame game.gameId (Dict.keys words) )
+
                 _ ->
                     ( newModel, Cmd.none )
+
+        GameCanceledTF gameId ->
+            ( { model | kggames = Dict.remove gameId model.kggames }, Cmd.none )
 
         GameTimesBroadcastTF data ->
             case Dict.get data.gameId model.kggames of
@@ -284,6 +301,17 @@ updateFromBackend msg model =
 
         PlayerInfoRegisteredTF player ->
             ( { model | thisPlayer = Just player }, Lamdera.sendToBackend RequestInitialGamesBroadCastTB )
+
+        KanjiDictEntriesTF entries ->
+            ( { model
+                | kanjidic =
+                    List.foldr
+                        (\k acc -> Dict.insert (k.kanji |> String.toList |> List.head |> Maybe.withDefault '❌') k acc)
+                        model.kanjidic
+                        entries
+              }
+            , Cmd.none
+            )
 
         NoOpTF ->
             ( model, Cmd.none )
