@@ -118,7 +118,8 @@ init url key =
       , now = Time.millisToPosix 0
       , kanjidic = Dict.empty
       }
-    , Cmd.batch [ getWordsEndGame 0 [ "学校" ], getKanjiKeys ]
+    , Cmd.none
+      -- Cmd.batch [ getWordsEndGame 0 [ "学校" ], getKanjiKeys ]
     )
 
 
