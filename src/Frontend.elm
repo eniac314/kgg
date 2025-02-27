@@ -11,6 +11,7 @@ import Element.Events as Events
 import Element.Font as Font
 import Element.HexColor exposing (rgbCSSHex)
 import Element.Input as Input
+import Env
 import GuessingGame as Kgg
 import Helpers exposing (..)
 import Html
@@ -117,7 +118,7 @@ init url key =
       , now = Time.millisToPosix 0
       , kanjidic = Dict.empty
       }
-    , Cmd.none
+    , getKanjiKeys
     )
 
 
@@ -220,13 +221,18 @@ update msg model =
 
 
 baseUrl =
-    "https://www.uminokirin.com"
+    case Env.mode of
+        Env.Production ->
+            "https://www.uminokirin.com"
+
+        Env.Development ->
+            "http://localhost:8001/https://www.uminokirin.com"
 
 
 getKanjiKeys =
     Http.get
         { url = baseUrl ++ "/api/getKanjiKeys"
-        , expect = Http.expectString GotKeys
+        , expect = Http.expectString (always NoOpFrontendMsg)
         }
 
 
