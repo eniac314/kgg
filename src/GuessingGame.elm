@@ -581,7 +581,7 @@ loadingView substate =
         , width (px 400)
         ]
         [ el [ centerX ] (text <| "Chargement " ++ String.fromInt (currentGameInitialLoadingStatus substate) ++ "%")
-        , image [ centerX, width (px 100) ] { src = "/bar.svg", description = "buffering!" }
+        , image [ centerX, width (px 100) ] { src = "./bar.svg", description = "buffering!" }
         ]
 
 
