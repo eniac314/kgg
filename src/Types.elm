@@ -81,6 +81,7 @@ type FrontendMsg
     | KggLeaveGame Int
     | KggSendWord GameId
     | KggRequestNextKanji GameId
+    | KggEndGame GameId
     | GotTimeF Time.Posix
     | SendToBackendWithTime ToBackend
     | KeyboardMsg Keyboard.Msg

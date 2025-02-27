@@ -156,6 +156,10 @@ requestNextKanji model gameId =
             ( model, Cmd.none )
 
 
+endGame model gameId =
+    ( { model | kggames = Dict.remove gameId model.kggames }, Cmd.none )
+
+
 setKanjiSet : FrontendModel -> KanjiSet -> Int -> ( FrontendModel, Cmd FrontendMsg )
 setKanjiSet model kanjiSet gameId =
     updateGame model
@@ -645,7 +649,7 @@ inPlayView kanjidic gameId players thisPlayer substate buffer wrongWord bufferin
               else
                 noAttr
             , if thisPlayerIsPlaying then
-                inFront <| el [ alignRight, Events.onClick <| KggLeaveGame gameId, Font.size 14, moveDown 7 ] (text "❎")
+                inFront <| el [ alignRight, pointer, Events.onClick <| KggLeaveGame gameId, Font.size 14, moveDown 7 ] (text "❎")
 
               else
                 noAttr
@@ -698,8 +702,22 @@ countDownView startingCountdown timeTillGameOver =
 
 mainKanjiView roundLength timeTillRoundEnd mbKanjiMeta kanji =
     let
+        clampedRoundLength =
+            if roundLength >= 0 then
+                roundLength
+
+            else
+                0
+
+        clampedTimeTillRoundEnd =
+            if timeTillRoundEnd >= 0 then
+                timeTillRoundEnd
+
+            else
+                0
+
         remainingTimeAngle =
-            -pi / 2 + 2 * pi * (toFloat (timeTillRoundEnd - roundLength) / toFloat roundLength)
+            -pi / 2 + 2 * pi * (toFloat (clampedTimeTillRoundEnd - clampedRoundLength) / toFloat clampedRoundLength)
 
         endX =
             String.fromInt <| round <| 700 + 600 * cos remainingTimeAngle
@@ -744,7 +762,7 @@ mainKanjiView roundLength timeTillRoundEnd mbKanjiMeta kanji =
                         , Svga.strokeWidth "1"
                         ]
                         []
-                    , if roundLength == timeTillRoundEnd then
+                    , if clampedRoundLength == clampedTimeTillRoundEnd then
                         Svg.circle
                             [ Svga.cx "700"
                             , Svga.cy "700"
@@ -998,13 +1016,13 @@ endedView gameId players thisPlayer substate =
             , Font.semiBold
             , paddingXY 60 0
             , if thisPlayerIsPlaying then
-                inFront <| el [ alignRight, Events.onClick <| KggLeaveGame gameId, Font.size 14, moveDown 7 ] (text "❎")
+                inFront <| el [ alignRight, pointer, Events.onClick <| KggEndGame gameId, Font.size 14, moveDown 7 ] (text "❎")
 
               else
                 noAttr
             ]
             (text "Game Over")
-        , row [] [ text "score: ", text (String.fromInt substate.score) ]
+        , row [ centerX ] [ text "score: ", text (String.fromInt substate.score) ]
         , column [ width fill, spacing 15 ]
             (Dict.map (\k v -> column [ width fill, spacing 15 ] (List.map (jmDictEntryView () SearchEverything k) v))
                 substate.words

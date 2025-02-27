@@ -189,6 +189,9 @@ update msg model =
         KggRequestNextKanji gameId ->
             Kgg.requestNextKanji model gameId
 
+        KggEndGame gameId ->
+            Kgg.endGame model gameId
+
         KggSendWord gameId ->
             Kgg.sendWord model gameId
 
